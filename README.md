@@ -159,14 +159,86 @@ Or configure an auto-scan channel and just drop the photo — no command needed.
 
 ---
 
-## Docker
+## Deployment
+
+> **All deployment methods require `DISCORD_TOKEN` to be set.** If you use auto-scan channels, `AUTOSCAN_CHANNELS` must also be set. See `.env.example` for the full list of env vars.
+
+### Docker (recommended)
+
+The easiest way to run SCLU:
+
+```bash
+cp .env.example .env
+# Edit .env and set DISCORD_TOKEN (and optionally AUTOSCAN_CHANNELS)
+
+docker compose up -d
+```
+
+This builds the image and starts the bot with automatic restarts. To rebuild after pulling updates:
+
+```bash
+docker compose up -d --build
+```
+
+Or run without Compose:
 
 ```bash
 docker build -t sclu .
-docker run -d --env-file .env sclu
+docker run -d --env-file .env --restart unless-stopped sclu
 ```
 
-*(Dockerfile coming soon — see [#4](https://github.com/christmas-island/sclu/issues/4))*
+### Fly.io
+
+```bash
+flyctl launch          # creates fly.toml — pick a region, say No to databases
+flyctl secrets set DISCORD_TOKEN=your-token-here
+flyctl secrets set AUTOSCAN_CHANNELS=channel-id-1,channel-id-2   # optional
+flyctl deploy
+```
+
+Scale to one machine (bots don't need redundancy):
+
+```bash
+flyctl scale count 1
+```
+
+### Railway
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template)
+
+1. Click **Deploy on Railway** (or connect your fork)
+2. Set environment variables in the Railway dashboard:
+   - `DISCORD_TOKEN` (required)
+   - `AUTOSCAN_CHANNELS` (optional)
+3. Railway auto-deploys on push
+
+### Self-hosted VPS (systemd)
+
+After cloning, installing deps, and creating your `.env`:
+
+```ini
+# /etc/systemd/system/sclu-bot.service
+[Unit]
+Description=SCLU Discord Bot
+After=network.target
+
+[Service]
+Type=simple
+User=sclu
+WorkingDirectory=/opt/sclu
+EnvironmentFile=/opt/sclu/.env
+ExecStart=/opt/sclu/venv/bin/python bot.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now sclu-bot
+```
 
 ---
 
