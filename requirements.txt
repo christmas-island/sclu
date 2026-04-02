@@ -1,0 +1,19 @@
+# Discord
+discord.py>=2.3.0
+
+# HTTP (async)
+aiohttp>=3.9.0
+
+# Barcode scanning
+pyzbar>=0.1.9
+opencv-python-headless>=4.9.0
+
+# Image processing
+Pillow>=10.0.0
+numpy>=1.24.0
+
+# OCR (optional — used as fallback when barcode scan fails)
+pytesseract>=0.3.10
+
+# Env / config
+python-dotenv>=1.0.0
