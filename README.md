@@ -69,15 +69,57 @@ cp .env.example .env
 # Edit .env and set DISCORD_TOKEN
 ```
 
-### 3. Create a Discord bot
+### 3. Create a Discord bot application
 
 1. Go to [discord.com/developers/applications](https://discord.com/developers/applications)
-2. Create New Application → Bot → Reset Token
-3. Enable **Message Content Intent** under Privileged Gateway Intents
-4. Copy token to `DISCORD_TOKEN` in `.env`
-5. Invite bot with: `applications.commands` + `bot` scopes, with `Send Messages` + `Read Message History` permissions
+2. Click **New Application** → give it a name (e.g. "SCLU Bot") → Create
+3. Go to **Bot** in the left sidebar
+4. Click **Reset Token** → copy it → paste into `DISCORD_TOKEN` in your `.env`
+5. Under **Privileged Gateway Intents**, enable:
+   - ✅ **Message Content Intent** (required to read image attachments)
+   - ✅ **Server Members Intent** (optional, for future features)
+6. Click **Save Changes**
 
-### 4. Run
+### 4. Invite the bot to your server
+
+Go to **OAuth2 → URL Generator** in the left sidebar and configure:
+
+**Scopes:**
+- ✅ `bot`
+- ✅ `applications.commands`
+
+**Bot Permissions:**
+- ✅ Read Messages / View Channels
+- ✅ Send Messages
+- ✅ Embed Links
+- ✅ Attach Files
+- ✅ Read Message History
+- ✅ Use Slash Commands
+
+Copy the generated URL and open it in your browser to add the bot to any server where you have **Manage Server** permissions.
+
+**Quick invite URL template** (replace `YOUR_CLIENT_ID` with your app's Client ID from the OAuth2 page):
+
+```
+https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot+applications.commands&permissions=274877975552
+```
+
+> **Finding your Client ID:** Go to your application → **General Information** → copy the Application ID.
+
+> **Permissions integer `274877975552`** encodes: Read Messages, Send Messages, Embed Links, Attach Files, Read Message History, Use Slash Commands. Generate your own at [discordapi.com/permissions.html](https://discordapi.com/permissions.html) if you need to customize.
+
+### 5. Configure auto-scan channels (optional)
+
+To have the bot automatically SCLU any image dropped in specific channels (no `!sclu` command needed), add channel IDs to your `.env`:
+
+```bash
+# Comma-separated Discord channel IDs
+AUTOSCAN_CHANNELS=123456789012345678,987654321098765432
+```
+
+To find a channel ID: right-click the channel in Discord → **Copy Channel ID** (requires Developer Mode — enable it under User Settings → Advanced).
+
+### 6. Run
 
 ```bash
 python bot.py
