@@ -13,6 +13,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY bot.py sclu.py ./
+COPY bot.py sclu.py api.py ./
+COPY web/ ./web/
 
 CMD ["python", "bot.py"]

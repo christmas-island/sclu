@@ -17,3 +17,8 @@ pytesseract>=0.3.10
 
 # Env / config
 python-dotenv>=1.0.0
+
+# Web API
+fastapi>=0.111.0
+uvicorn>=0.29.0
+python-multipart>=0.0.9
